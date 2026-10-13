@@ -1,0 +1,161 @@
+:root {
+    --bg: #f4f6f8;
+    --card: #fff;
+    --text: #1f2933;
+    --muted: #e4e7eb;
+    --primary: #2563eb;
+    --danger: #dc2626;
+    font-family: system-ui, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+}
+
+main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 24px 16px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 16px;
+    margin: 16px 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
+}
+
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.filters input[placeholder] {
+    flex: 1 1 220px;
+}
+
+input,
+select,
+button {
+    font: inherit;
+    padding: 8px 10px;
+    border: 1px solid #cbd2d9;
+    border-radius: 6px;
+}
+
+button {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+    cursor: pointer;
+}
+
+button.secondary {
+    background: #fff;
+    color: var(--text);
+    border-color: #cbd2d9;
+}
+
+button.danger {
+    background: #fff;
+    color: var(--danger);
+    border-color: var(--danger);
+}
+
+button:disabled {
+    opacity: .6;
+    cursor: wait;
+}
+
+.form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+}
+
+.form h2,
+.form .actions,
+.form .error {
+    grid-column: 1/-1;
+    margin: 0;
+}
+
+.form label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: .9rem;
+}
+
+.actions,
+.row-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.table-wrap {
+    overflow-x: auto;
+    background: var(--card);
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--muted);
+    white-space: nowrap;
+}
+
+.badge {
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: .8rem;
+    background: var(--muted);
+}
+
+.badge.scheduled {
+    background: #dbeafe;
+}
+
+.badge.completed {
+    background: #dcfce7;
+}
+
+.badge.cancelled {
+    background: #fee2e2;
+}
+
+.badge.no-show {
+    background: #fef3c7;
+}
+
+.error {
+    color: var(--danger);
+}
+
+.empty {
+    text-align: center;
+    color: #616e7c;
+    padding: 32px;
+}
