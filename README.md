@@ -30,10 +30,12 @@ cd backend && pytest -v
 | Method | Path | Notes |
 |---|---|---|
 | GET | `/api/appointments` | Filters: `q` (patient/doctor), `status`, `appointment_type`, `date_from`, `date_to` |
-| POST | `/api/appointments` | 201 on success, 422 invalid, 409 if doctor double-booked |
-| GET / PUT / DELETE | `/api/appointments/{id}` | 404 if missing |
+| POST | `/api/appointments` | Creates a Scheduled appointment; 422 invalid, 409 if doctor double-booked |
+| GET / PUT | `/api/appointments/{id}` | Read or edit appointment details; status cannot be set by the patient |
+| POST | `/api/appointments/{id}/cancel` | Cancels the appointment |
 
 ## Design decisions
+- **Status ownership:** New appointments are always Scheduled. Patients can cancel appointments, while Completed and No-show are reserved for a future staff workflow.
 - **Allowed values:** Status = Scheduled / Completed / Cancelled / No-show; Type = Consultation / Follow-up / Check-up / Procedure. Enforced by the API, not just the UI.
 - **Double-booking:** a doctor can't have two non-cancelled appointments at the same time (409). Cancelling frees the slot.
 - **Layered backend:** routes (`main.py`) → DB logic (`crud.py`) → models/schemas, so logic is testable without HTTP.

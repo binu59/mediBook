@@ -20,5 +20,5 @@ export const api = {
   },
   create: (body) => request(BASE, { method: "POST", body: JSON.stringify(body) }),
   update: (id, body) => request(`${BASE}/${id}`, { method: "PUT", body: JSON.stringify(body) }),
-  remove: (id) => request(`${BASE}/${id}`, { method: "DELETE" }),
+  cancel: (id) => request(`${BASE}/${id}/cancel`, { method: "POST" }),
 };

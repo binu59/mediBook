@@ -57,11 +57,24 @@ def update_appointment(appt_id: int, data: schemas.AppointmentIn, db: Session = 
     appt = _get_or_404(db, appt_id)
     try:
         return crud.update_appointment(db, appt, data)
+    except crud.AppointmentNotEditableError as e:
+        raise HTTPException(409, str(e))
     except crud.SlotTakenError as e:
+        raise HTTPException(409, str(e))
+
+
+@app.post("/api/appointments/{appt_id}/cancel", response_model=schemas.AppointmentOut)
+def cancel_appointment(appt_id: int, db: Session = Depends(get_db)):
+    try:
+        return crud.cancel_appointment(db, _get_or_404(db, appt_id))
+    except crud.AppointmentNotCancellableError as e:
         raise HTTPException(409, str(e))
 
 
 @app.delete("/api/appointments/{appt_id}", status_code=204)
 def delete_appointment(appt_id: int, db: Session = Depends(get_db)):
-    crud.delete_appointment(db, _get_or_404(db, appt_id))
+    try:
+        crud.delete_appointment(db, _get_or_404(db, appt_id))
+    except crud.AppointmentNotDeletableError as e:
+        raise HTTPException(409, str(e))
     return Response(status_code=204)

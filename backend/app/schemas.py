@@ -19,13 +19,12 @@ class AppointmentType(str, Enum):
 
 
 class AppointmentIn(BaseModel):
-    model_config = ConfigDict(use_enum_values=True)
+    model_config = ConfigDict(extra="forbid")
 
     patient_name: str = Field(max_length=100)
     scheduled_at: datetime
     doctor: str = Field(max_length=100)
     appointment_type: AppointmentType
-    status: Status = Status.scheduled
 
     @field_validator("patient_name", "doctor")
     @classmethod
@@ -39,3 +38,4 @@ class AppointmentIn(BaseModel):
 class AppointmentOut(AppointmentIn):
     model_config = ConfigDict(from_attributes=True, use_enum_values=True)
     id: int
+    status: Status

@@ -10,6 +10,18 @@ class SlotTakenError(Exception):
     """The doctor already has an active appointment at that time."""
 
 
+class AppointmentNotEditableError(Exception):
+    """The appointment cannot be edited after it is no longer active."""
+
+
+class AppointmentNotDeletableError(Exception):
+    """The appointment cannot be deleted after it has been completed."""
+
+
+class AppointmentNotCancellableError(Exception):
+    """The appointment cannot be cancelled after it has been completed."""
+
+
 def _ensure_slot_free(db: Session, doctor: str, when: datetime, status: str, exclude_id: int | None = None):
     if status == schemas.Status.cancelled.value:
         return  # cancelled appointments don't occupy a slot
@@ -52,8 +64,8 @@ def get_appointment(db: Session, appt_id: int):
 
 
 def create_appointment(db: Session, data: schemas.AppointmentIn):
-    _ensure_slot_free(db, data.doctor, data.scheduled_at, data.status)
-    appt = models.Appointment(**data.model_dump())
+    _ensure_slot_free(db, data.doctor, data.scheduled_at, schemas.Status.scheduled.value)
+    appt = models.Appointment(**data.model_dump(), status=schemas.Status.scheduled.value)
     db.add(appt)
     db.commit()
     db.refresh(appt)
@@ -61,7 +73,9 @@ def create_appointment(db: Session, data: schemas.AppointmentIn):
 
 
 def update_appointment(db: Session, appt: models.Appointment, data: schemas.AppointmentIn):
-    _ensure_slot_free(db, data.doctor, data.scheduled_at, data.status, exclude_id=appt.id)
+    if appt.status in (schemas.Status.cancelled.value, schemas.Status.completed.value):
+        raise AppointmentNotEditableError(f"{appt.status} appointments cannot be edited")
+    _ensure_slot_free(db, data.doctor, data.scheduled_at, appt.status, exclude_id=appt.id)
     for key, value in data.model_dump().items():
         setattr(appt, key, value)
     db.commit()
@@ -69,6 +83,19 @@ def update_appointment(db: Session, appt: models.Appointment, data: schemas.Appo
     return appt
 
 
+def cancel_appointment(db: Session, appt: models.Appointment):
+    if appt.status == schemas.Status.completed.value:
+        raise AppointmentNotCancellableError("Completed appointments cannot be cancelled")
+    if appt.status == schemas.Status.cancelled.value:
+        return appt
+    appt.status = schemas.Status.cancelled.value
+    db.commit()
+    db.refresh(appt)
+    return appt
+
+
 def delete_appointment(db: Session, appt: models.Appointment):
+    if appt.status == schemas.Status.completed.value:
+        raise AppointmentNotDeletableError("Completed appointments cannot be deleted")
     db.delete(appt)
     db.commit()
