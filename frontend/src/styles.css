@@ -77,6 +77,14 @@ button { cursor: pointer; }
 .actions button span { margin-left: 12px; font-size: 1.1rem; }
 .actions .secondary, .secondary { border: 1px solid var(--line); color: var(--ink); background: #fff; }
 .secure-note { margin: 18px 0 0; color: var(--muted); font-size: .75rem; }
+.booking-success { display: flex; flex-direction: column; align-items: center; max-width: 680px; margin: 58px auto 20px; padding: 56px 38px; border: 1px solid var(--line); border-radius: 22px; background: var(--surface); box-shadow: 0 12px 30px rgba(23, 82, 82, .06); text-align: center; }
+.success-icon { display: grid; place-items: center; width: 64px; height: 64px; margin-bottom: 22px; border-radius: 50%; color: #fff; background: var(--teal); font-size: 2rem; font-weight: 700; }
+.booking-success .eyebrow { margin-bottom: 8px; }
+.booking-success h2 { font-size: clamp(1.55rem, 4vw, 2rem); }
+.booking-success > p:not(.eyebrow) { max-width: 470px; margin: 14px 0 26px; color: var(--muted); line-height: 1.6; }
+.booking-success button { border: 0; border-radius: 10px; padding: 13px 20px; color: #fff; background: var(--teal); font-weight: 700; }
+.booking-success button:hover { background: var(--teal-dark); }
+.booking-success button span { margin-left: 12px; font-size: 1.1rem; }
 .booking-aside { position: relative; overflow: hidden; padding: 32px 27px; color: #fff; background: linear-gradient(155deg, #246f76, #8bc9bd); }
 .booking-aside::after { position: absolute; content: ""; width: 200px; height: 200px; right: -90px; bottom: -80px; border: 30px solid rgba(255,255,255,.1); border-radius: 50%; }
 .aside-badge { display: grid; place-items: center; width: 42px; height: 42px; margin-bottom: 80px; border-radius: 14px; color: #145d66; background: #d8f0e8; font-size: 1.2rem; }

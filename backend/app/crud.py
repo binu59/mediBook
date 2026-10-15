@@ -56,7 +56,7 @@ def list_appointments(
         stmt = stmt.where(models.Appointment.scheduled_at >= datetime.combine(date_from, time.min))
     if date_to:
         stmt = stmt.where(models.Appointment.scheduled_at <= datetime.combine(date_to, time.max))
-    return db.scalars(stmt.order_by(models.Appointment.scheduled_at)).all()
+    return db.scalars(stmt.order_by(models.Appointment.id.desc())).all()
 
 
 def get_appointment(db: Session, appt_id: int):

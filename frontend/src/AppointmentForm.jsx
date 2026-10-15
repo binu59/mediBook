@@ -127,10 +127,10 @@ export default function AppointmentForm({ initial, onSubmit, onCancel }) {
         </div>
       {error && <p className="error" role="alert">{error}</p>}
         <div className="actions">
-          <button type="submit" disabled={saving}>{saving ? "Booking…" : initial ? "Save changes" : "Book appointment"} <span>→</span></button>
+          <button type="submit" disabled={saving}>{saving ? "Booking…" : initial ? "Save changes" : "Book appointment"} <span></span></button>
           {initial && <button type="button" className="secondary" onClick={onCancel}>Cancel</button>}
         </div>
-        <p className="secure-note">⌁ Your information is private and secure</p>
+        <p className="secure-note"> Your information is private and secure</p>
       </div>
       <aside className="booking-aside">
         <div className="aside-badge">✦</div>

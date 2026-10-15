@@ -11,6 +11,7 @@ export default function App() {
   const [filters, setFilters] = useState(NO_FILTERS);
   const [editing, setEditing] = useState({});
   const [showHistory, setShowHistory] = useState(false);
+  const [bookingComplete, setBookingComplete] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -34,11 +35,17 @@ export default function App() {
   const setFilter = (field) => (e) => setFilters({ ...filters, [field]: e.target.value });
 
   async function handleSave(data) {
-    if (editing.id) await api.update(editing.id, data);
-    else await api.create(data);
+    const isNewBooking = !editing.id;
+    if (isNewBooking) await api.create(data);
+    else await api.update(editing.id, data);
     await load();
     setEditing({});
-    setShowHistory(true);
+    if (isNewBooking) {
+      setBookingComplete(true);
+      setShowHistory(false);
+    } else {
+      setShowHistory(true);
+    }
   }
 
   async function handleCancel(a) {
@@ -59,7 +66,7 @@ export default function App() {
           <span>Medi<span>Book</span></span>
         </a>
         <nav className="topnav" aria-label="Main navigation">
-          <button className={!showHistory ? "nav-link active" : "nav-link"} onClick={() => setShowHistory(false)}>Book an appointment</button>
+          <button className={!showHistory ? "nav-link active" : "nav-link"} onClick={() => { setBookingComplete(false); setShowHistory(false); }}>Book an appointment</button>
           <button className={showHistory ? "nav-link active" : "nav-link"} onClick={() => setShowHistory(true)}>My appointments{appointments.length > 0 && <span className="count">{appointments.length}</span>}</button>
         </nav>
         <div className="profile">
@@ -87,7 +94,7 @@ export default function App() {
               <p className="eyebrow">YOUR CARE JOURNEY</p>
               <h2>My appointments</h2>
             </div>
-            <button onClick={() => { setShowHistory(false); setEditing({}); }}>+ Book an appointment</button>
+            <button onClick={() => { setBookingComplete(false); setShowHistory(false); setEditing({}); }}>+ Book an appointment</button>
           </div>
           <section className="card filters">
             <input placeholder="Search patient or doctor…" value={filters.q} onChange={setFilter("q")} />
@@ -107,12 +114,22 @@ export default function App() {
           {loading ? <p className="loading">Loading your appointments…</p> : <AppointmentTable appointments={appointments} onEdit={(a) => { setEditing(a); setShowHistory(false); }} onCancel={handleCancel} />}
         </section>
       ) : (
-        <AppointmentForm
-          key={editing?.id ?? "new"}
-          initial={editing.id ? editing : null}
-          onSubmit={handleSave}
-          onCancel={() => setEditing({})}
-        />
+        bookingComplete ? (
+          <section className="booking-success" aria-labelledby="booking-success-title">
+            <div className="success-icon" aria-hidden="true">✓</div>
+            <p className="eyebrow">BOOKING CONFIRMED</p>
+            <h2 id="booking-success-title">Thanks for booking with MediBook!</h2>
+            <p>Your appointment was successfully scheduled. You can view all your appointment details in one place.</p>
+            <button onClick={() => { setBookingComplete(false); setShowHistory(true); }}>Go to my appointments <span>→</span></button>
+          </section>
+        ) : (
+          <AppointmentForm
+            key={editing?.id ?? "new"}
+            initial={editing.id ? editing : null}
+            onSubmit={handleSave}
+            onCancel={() => setEditing({})}
+          />
+        )
       )}
       <footer><span>© 2026 MediBook</span><span>Care that fits your life.</span></footer>
     </main>

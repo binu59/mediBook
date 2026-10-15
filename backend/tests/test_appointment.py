@@ -40,11 +40,13 @@ def test_create_and_get(client):
     assert client.get(f"/api/appointments/{created['id']}").json()["patient_name"] == "Test Patient"
 
 
-def test_list_sorted_by_time(client):
-    client.post("/api/appointments", json=payload(scheduled_at="2030-01-11T09:00"))
-    client.post("/api/appointments", json=payload(scheduled_at="2030-01-10T09:00"))
-    times = [a["scheduled_at"] for a in client.get("/api/appointments").json()]
-    assert times == sorted(times)
+def test_list_newest_appointments_first(client):
+    first = client.post("/api/appointments", json=payload(scheduled_at="2030-01-11T09:00")).json()
+    second = client.post("/api/appointments", json=payload(scheduled_at="2030-01-10T09:00")).json()
+
+    appointments = client.get("/api/appointments").json()
+
+    assert [a["id"] for a in appointments] == [second["id"], first["id"]]
 
 
 def test_update(client):
